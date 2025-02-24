@@ -7,6 +7,8 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const API_KEY = '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';
+
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -21,10 +23,10 @@ const Chatbot = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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'
+          'Authorization': `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
-          model: "gpt-4",
+          model: "gpt-3.5-turbo",
           messages: [
             {
               role: "system",
@@ -34,17 +36,36 @@ const Chatbot = () => {
               role: "user",
               content: userMessage
             }
-          ]
+          ],
+          temperature: 0.7,
+          max_tokens: 500
         })
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API Error:', errorData);
+        throw new Error(errorData.error?.message || 'API request failed');
+      }
+
       const data = await response.json();
+      
+      if (!data?.choices?.[0]?.message?.content) {
+        console.error('Invalid API response:', data);
+        throw new Error('Invalid response format');
+      }
+
       setMessages(prev => [...prev, { text: data.choices[0].message.content, isBot: true }]);
     } catch (error) {
-      setMessages(prev => [...prev, { text: "I apologize, but I'm having trouble connecting right now. Please try again later.", isBot: true }]);
+      console.error('Error:', error);
+      setMessages(prev => [...prev, { 
+        text: "I apologize, but I'm having trouble connecting right now. Please try again later. " + 
+             (error instanceof Error ? error.message : ''),
+        isBot: true 
+      }]);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   useEffect(() => {
