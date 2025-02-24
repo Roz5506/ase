@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cursor glow effect */
+.cursor-glow {
+  width: 20px;
+  height: 20px;
+  background: rgba(124, 58, 237, 0.8); /* Changed to violet-600 */
+  border-radius: 50%;
+  filter: blur(15px);
+  pointer-events: none;
+  position: fixed;
+  z-index: 9999;
+  mix-blend-mode: plus-lighter; /* Changed to plus-lighter for better violet glow */
+  transition: transform 0.2s ease;
+}
+
+/* Hide cursor on touch devices */
+@media (hover: none) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Card hover effects */
+.feature-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(124, 58, 237, 0.1);
+}
+
+/* Button hover effects */
+.button-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(124, 58, 237, 0.15);
+}
